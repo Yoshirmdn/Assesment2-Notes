@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Mobpro1</string>
+    <string name="empty_list">Belum ada data</string>
+    <string name="x_diklik">%1$s diklik!</string>
+    <string name="tambah_catatan">Tambah Mahasiswa</string>
+    <string name="belum_bisa">Belum bisa tambah catatan</string>
+    <string name="nama">Nama</string>
+    <string name="nim">NIM</string>
+    <string name="kelas">Kelas</string>
+    <string name="edit_mahasiswa">Edit Mahasiswa</string>
+    <string name="kembali">Kembali</string>
+    <string name="simpan">Simpan</string>
+    <string name="invalid">Nama Nim Kelas tidak boleh kosong</string>
+    <string name="lainnya">Lainnya</string>
+    <string name="hapus">Hapus</string>
+    <string name="pesan_hapus">Hapus Catatan Ini ?</string>
+    <string name="tombol_hapus">Hapus</string>
+    <string name="tombol_batal">Batal</string>
+    <string name="tampilan_list">Tampilan List</string>
+    <string name="tampilan_grid">Tampilan Grid</string>
+</resources>
