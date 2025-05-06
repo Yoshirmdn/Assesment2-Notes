@@ -4,28 +4,28 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.rioramdani0034.mobpro1.model.Mahasiswa
+import com.rioramdani0034.mobpro1.model.Notes
 
 @Database(
-    entities = [Mahasiswa::class],
+    entities = [Notes::class],
     version = 1,
     exportSchema = false
 )
-abstract class MahasiswaDb : RoomDatabase() {
-    abstract val dao: MahasiswaDao
+abstract class NotesDb : RoomDatabase() {
+    abstract val dao: NotesDao
 
     companion object {
         @Volatile
-        private var INSTANCE: MahasiswaDb? = null
-        fun getInstance(context: Context): MahasiswaDb {
+        private var INSTANCE: NotesDb? = null
+        fun getInstance(context: Context): NotesDb {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        MahasiswaDb::class.java,
-                        "mahasiswa.db"
-                    ).build()
+                        NotesDb::class.java,
+                        "notes.db"
+                    ).fallbackToDestructiveMigration().build()
                     INSTANCE = instance
                 }
                 return instance
