@@ -45,7 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.rioramdani0034.mobpro1.R
-import com.rioramdani0034.mobpro1.model.Mahasiswa
+import com.rioramdani0034.mobpro1.model.Notes
 import com.rioramdani0034.mobpro1.navigation.Screen
 import com.rioramdani0034.mobpro1.ui.theme.Mobpro1Theme
 import com.rioramdani0034.mobpro1.util.SettingsDataStore
@@ -166,7 +166,7 @@ fun ScreenContent(
 }
 
 @Composable
-fun ListItem(mhs: Mahasiswa, onClick: () -> Unit) {
+fun ListItem(mhs: Notes, onClick: () -> Unit) {
     Column(
         modifier =  Modifier.fillMaxWidth()
             .clickable { onClick() }
@@ -174,15 +174,15 @@ fun ListItem(mhs: Mahasiswa, onClick: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = mhs.nama,
+            text = mhs.name,
             fontWeight = FontWeight.Bold,
         )
-        Text(text = mhs.nim)
-        Text(text = mhs.kelas)
+        Text(text = mhs.content)
+        Text(text = mhs.categories)
     }
 }
 @Composable
-fun GridItem(mhs: Mahasiswa, onClick: () -> Unit) {
+fun GridItem(mhs: Notes, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,18 +197,18 @@ fun GridItem(mhs: Mahasiswa, onClick: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = mhs.nama,
+                text = mhs.name,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = mhs.nim,
+                text = mhs.content,
                 maxLines = 4,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = mhs.kelas,
+                text = mhs.categories,
                 maxLines = 4,
                 overflow = TextOverflow.Ellipsis
             )

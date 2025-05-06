@@ -70,9 +70,9 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     LaunchedEffect(Unit) {
         if(id == null) return@LaunchedEffect
         val data = viewModel.getMahasiswa(id) ?: return@LaunchedEffect
-        name = data.nama
-        content = data.nim
-        categories = data.kelas
+        name = data.name
+        content = data.content
+        categories = data.categories
     }
 
     Scaffold(
