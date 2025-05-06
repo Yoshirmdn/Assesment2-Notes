@@ -61,18 +61,18 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     val context = LocalContext.current
     val factory = ViewModelFactory(context)
     val viewModel: DetailViewModel = viewModel(factory = factory)
-    var nama by remember { mutableStateOf("") }
-    var nim by remember { mutableStateOf("") }
-    val defaultKelas by remember { mutableStateOf("D3IF-47-01") }
-    var kelas by remember { mutableStateOf(defaultKelas) }
+    var name by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+    val defaultCategories by remember { mutableStateOf("D3IF-47-01") }
+    var categories by remember { mutableStateOf(defaultCategories) }
     var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if(id == null) return@LaunchedEffect
         val data = viewModel.getMahasiswa(id) ?: return@LaunchedEffect
-        nama = data.nama
-        nim = data.nim
-        kelas = data.kelas
+        name = data.nama
+        content = data.nim
+        categories = data.kelas
     }
 
     Scaffold(
@@ -100,14 +100,14 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                 ),
                 actions = {
                     IconButton(onClick = {
-                        if(nama == "" || nim == "" || kelas == "") {
+                        if(name == "" || content == "" || categories == "") {
                             Toast.makeText(context, R.string.invalid, Toast.LENGTH_SHORT).show()
                             return@IconButton
                         }
                         if (id == null) {
-                            viewModel.insert(nama, nim, kelas)
+                            viewModel.insert(name, content, categories)
                         } else {
-                            viewModel.update(id, nama, nim, kelas)
+                            viewModel.update(id, name, content, categories)
                         }
                         navController.popBackStack()
                     }) {
@@ -126,13 +126,13 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             )
         }
     ) { padding ->
-        FormCatatan(
-            nama = nama,
-            onTitleChange = { nama = it },
-            nim = nim,
-            onDescChange = { nim = it },
-            kelasDipilih = kelas,
-            onKelasChange = { kelas = it },
+        FormNotes(
+            name = name,
+            onTitleChange = { name = it },
+            content = content,
+            onDescChange = { content = it },
+            categoriesChoose = categories,
+            onKelasChange = { categories = it },
             modifier = Modifier.padding(padding)
         )
         if(id != null && showDialog){
@@ -147,10 +147,10 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
 }
 
 @Composable
-fun FormCatatan(
-    nama: String, onTitleChange: (String) -> Unit,
-    nim: String, onDescChange: (String) -> Unit,
-    kelasDipilih: String, onKelasChange: (String) -> Unit,
+fun FormNotes(
+    name: String, onTitleChange: (String) -> Unit,
+    content: String, onDescChange: (String) -> Unit,
+    categoriesChoose: String, onKelasChange: (String) -> Unit,
     modifier: Modifier
 ){
     Column(
@@ -158,7 +158,7 @@ fun FormCatatan(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedTextField(
-            value = nama,
+            value = name,
             onValueChange = { onTitleChange(it) },
             label = { Text(text = stringResource(R.string.nama)) },
             singleLine = true,
@@ -169,7 +169,7 @@ fun FormCatatan(
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            value = nim,
+            value = content,
             onValueChange = { onDescChange(it) },
             label = { Text(text = stringResource(R.string.nim)) },
             keyboardOptions = KeyboardOptions(
@@ -188,9 +188,9 @@ fun FormCatatan(
                 )
                 .padding(8.dp)
         ) {
-            KelasRadioGroup(
-                selectedKelas = kelasDipilih,
-                onKelasSelected = onKelasChange,
+            CategoriesRadioGroup(
+                selectedCategories = categoriesChoose,
+                onCategoriesSelected = onKelasChange,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -199,12 +199,12 @@ fun FormCatatan(
 }
 
 @Composable
-fun KelasRadioGroup(
-    selectedKelas: String,
-    onKelasSelected: (String) -> Unit,
+fun CategoriesRadioGroup(
+    selectedCategories: String,
+    onCategoriesSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val kelasOptions = listOf("D3IF-47-01", "D3IF-47-02", "D3IF-47-03", "D3IF-47-04", "D3IF-47-05")
+    val categoriesOptions = listOf("D3IF-47-01", "D3IF-47-02", "D3IF-47-03", "D3IF-47-04", "D3IF-47-05")
 
     Column(
         modifier = modifier
@@ -218,20 +218,20 @@ fun KelasRadioGroup(
             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )
 
-        kelasOptions.forEach { kelas ->
+        categoriesOptions.forEach { kelas ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .selectable(
-                        selected = (kelas == selectedKelas),
-                        onClick = { onKelasSelected(kelas) },
+                        selected = (kelas == selectedCategories),
+                        onClick = { onCategoriesSelected(kelas) },
                         role = Role.RadioButton
                     )
                     .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (kelas == selectedKelas),
+                    selected = (kelas == selectedCategories),
                     onClick = null
                 )
                 Text(
