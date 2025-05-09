@@ -10,8 +10,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,10 +34,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -51,7 +54,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,11 +74,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.rioramdani0034.mobpro1.R
 import com.rioramdani0034.mobpro1.model.Notes
 import com.rioramdani0034.mobpro1.navigation.Screen
+import com.rioramdani0034.mobpro1.ui.theme.black_primary
+import com.rioramdani0034.mobpro1.ui.theme.blue_primary
+import com.rioramdani0034.mobpro1.ui.theme.green_primary
+import com.rioramdani0034.mobpro1.ui.theme.md_theme_light_primary
+import com.rioramdani0034.mobpro1.ui.theme.red_primary
+import com.rioramdani0034.mobpro1.ui.theme.yellow_primary
 import com.rioramdani0034.mobpro1.util.SettingsDataStore
 import com.rioramdani0034.mobpro1.util.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -86,8 +96,12 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
-    val dataStore = SettingsDataStore(LocalContext.current)
+    val context = LocalContext.current
+    val dataStore = SettingsDataStore(context)
     val showList by dataStore.layoutFlow.collectAsState(true)
+    val currentTheme by dataStore.themeColorFlow.collectAsState(SettingsDataStore.COLOR_DEFAULT)
+
+    var showColorPicker by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -105,6 +119,37 @@ fun MainScreen(navController: NavHostController) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 actions = {
+                    // Color Theme Toggle
+                    Box {
+                        IconButton(
+                            onClick = { showColorPicker = true },
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ColorLens,
+                                contentDescription = "Change theme color",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        ColorPickerDropdown(
+                            expanded = showColorPicker,
+                            onDismissRequest = { showColorPicker = false },
+                            onColorSelected = { color ->
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    dataStore.saveThemeColor(color)
+                                }
+                                showColorPicker = false
+                            },
+                            currentTheme = currentTheme
+                        )
+                    }
+
+                    // View Toggle (List/Grid)
+                    Spacer(modifier = Modifier.width(8.dp))
                     IconButton(
                         onClick = {
                             CoroutineScope(Dispatchers.IO).launch {
@@ -151,6 +196,97 @@ fun MainScreen(navController: NavHostController) {
     ) { innerPadding ->
         ScreenContent(showList, modifier = Modifier.padding(innerPadding), navController)
     }
+}
+
+@Composable
+fun ColorPickerDropdown(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onColorSelected: (String) -> Unit,
+    currentTheme: String
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(vertical = 8.dp)
+    ) {
+        Text(
+            text = "Choose Theme Color",
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        val colorOptions = listOf(
+            Pair(SettingsDataStore.COLOR_DEFAULT, "Default"),
+            Pair(SettingsDataStore.COLOR_RED, "Red"),
+            Pair(SettingsDataStore.COLOR_GREEN, "Green"),
+            Pair(SettingsDataStore.COLOR_BLUE, "Blue"),
+            Pair(SettingsDataStore.COLOR_YELLOW, "Yellow"),
+            Pair(SettingsDataStore.COLOR_BLACK, "Black")
+        )
+
+        colorOptions.forEach { (colorKey, colorName) ->
+            ColorDropdownItem(
+                colorKey = colorKey,
+                colorName = colorName,
+                isSelected = colorKey == currentTheme,
+                onSelect = { onColorSelected(colorKey) }
+            )
+        }
+    }
+}
+
+@Composable
+fun ColorDropdownItem(
+    colorKey: String,
+    colorName: String,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    val colorIndicator = when (colorKey) {
+        SettingsDataStore.COLOR_DEFAULT -> MaterialTheme.colorScheme.copy(
+            primary = md_theme_light_primary
+        ).primary
+        SettingsDataStore.COLOR_RED -> red_primary
+        SettingsDataStore.COLOR_GREEN -> green_primary
+        SettingsDataStore.COLOR_BLUE -> blue_primary
+        SettingsDataStore.COLOR_YELLOW -> yellow_primary
+        SettingsDataStore.COLOR_BLACK -> black_primary
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    DropdownMenuItem(
+        text = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(colorIndicator)
+                        .then(
+                            if (isSelected) {
+                                Modifier.border(2.dp, MaterialTheme.colorScheme.onSurface, CircleShape)
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = colorName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+        },
+        onClick = onSelect
+    )
 }
 
 @Composable
