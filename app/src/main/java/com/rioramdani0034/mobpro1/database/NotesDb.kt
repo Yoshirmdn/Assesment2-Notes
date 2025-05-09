@@ -8,7 +8,7 @@ import com.rioramdani0034.mobpro1.model.Notes
 
 @Database(
     entities = [Notes::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class NotesDb : RoomDatabase() {

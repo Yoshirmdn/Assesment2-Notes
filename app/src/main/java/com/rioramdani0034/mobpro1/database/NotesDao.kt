@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
 interface NotesDao {
 
      @Insert
-     suspend fun insertNotes(mahasiswa: Notes)
+     suspend fun insertNotes(note: Notes)
 
      @Update
-     suspend fun updateNotes(mahasiswa: Notes)
+     suspend fun updateNotes(note: Notes)
 
      @Query("SELECT * FROM notes Order By content ASC")
-     fun getMahasiswa(): Flow<List<Notes>>
+     fun getNote(): Flow<List<Notes>>
 
      @Query("SELECT * FROM notes WHERE id = :id")
      suspend fun getNotesById(id: Long): Notes?
