@@ -54,7 +54,7 @@ import com.rioramdani0034.mobpro1.R
 import com.rioramdani0034.mobpro1.ui.theme.Mobpro1Theme
 import com.rioramdani0034.mobpro1.util.ViewModelFactory
 
-const val KEY_ID_MAHASISWA = "id_mhs"
+const val KEY_ID_NOTES = "id_mhs"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(navController: NavHostController, id: Long? = null) {
@@ -63,13 +63,13 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     val viewModel: DetailViewModel = viewModel(factory = factory)
     var name by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-    val defaultCategories by remember { mutableStateOf("D3IF-47-01") }
+    val defaultCategories by remember { mutableStateOf("Personal") }
     var categories by remember { mutableStateOf(defaultCategories) }
     var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if(id == null) return@LaunchedEffect
-        val data = viewModel.getMahasiswa(id) ?: return@LaunchedEffect
+        val data = viewModel.getNotes(id) ?: return@LaunchedEffect
         name = data.name
         content = data.content
         categories = data.categories
@@ -132,7 +132,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             content = content,
             onDescChange = { content = it },
             categoriesChoose = categories,
-            onKelasChange = { categories = it },
+            onCategoriesChange = { categories = it },
             modifier = Modifier.padding(padding)
         )
         if(id != null && showDialog){
@@ -150,7 +150,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
 fun FormNotes(
     name: String, onTitleChange: (String) -> Unit,
     content: String, onDescChange: (String) -> Unit,
-    categoriesChoose: String, onKelasChange: (String) -> Unit,
+    categoriesChoose: String, onCategoriesChange: (String) -> Unit,
     modifier: Modifier
 ){
     Column(
@@ -163,7 +163,8 @@ fun FormNotes(
             label = { Text(text = stringResource(R.string.nama)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
+                capitalization = KeyboardCapitalization.Sentences,
+                keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
             modifier = Modifier.fillMaxWidth()
@@ -173,7 +174,7 @@ fun FormNotes(
             onValueChange = { onDescChange(it) },
             label = { Text(text = stringResource(R.string.nim)) },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Text
             ),
             modifier = Modifier.fillMaxWidth()
         )
@@ -190,7 +191,7 @@ fun FormNotes(
         ) {
             CategoriesRadioGroup(
                 selectedCategories = categoriesChoose,
-                onCategoriesSelected = onKelasChange,
+                onCategoriesSelected = onCategoriesChange,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -204,7 +205,17 @@ fun CategoriesRadioGroup(
     onCategoriesSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val categoriesOptions = listOf("D3IF-47-01", "D3IF-47-02", "D3IF-47-03", "D3IF-47-04", "D3IF-47-05")
+    val categoriesOptions = listOf(
+        "Personal",
+        "Work",
+        "Ideas",
+        "Study",
+        "Shopping",
+        "Fitness",
+        "Travel",
+        "Finance",
+        "Projects",
+        "Diary")
 
     Column(
         modifier = modifier
@@ -218,24 +229,24 @@ fun CategoriesRadioGroup(
             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )
 
-        categoriesOptions.forEach { kelas ->
+        categoriesOptions.forEach { kategori ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .selectable(
-                        selected = (kelas == selectedCategories),
-                        onClick = { onCategoriesSelected(kelas) },
+                        selected = (kategori == selectedCategories),
+                        onClick = { onCategoriesSelected(kategori) },
                         role = Role.RadioButton
                     )
                     .padding(vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = (kelas == selectedCategories),
+                    selected = (kategori == selectedCategories),
                     onClick = null
                 )
                 Text(
-                    text = kelas,
+                    text = kategori,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 16.dp)
                 )

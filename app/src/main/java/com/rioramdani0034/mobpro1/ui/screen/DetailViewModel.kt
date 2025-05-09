@@ -9,34 +9,34 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel(private val dao: NotesDao) : ViewModel() {
 
-    fun insert(nama: String, nim: String, kelas: String) {
-        val mahasiswa = Notes(
-            name = nama,
-            content = nim,
-            categories = kelas
+    fun insert(name: String, content: String, categories: String) {
+        val notes = Notes(
+            name = name,
+            content = content,
+            categories = categories
         )
 
         viewModelScope.launch(Dispatchers.IO) {
-            dao.insertMahasiswa(mahasiswa)
+            dao.insertNotes(notes)
         }
     }
-    suspend fun getMahasiswa(id: Long): Notes? {
-        return dao.getMahasiswaById(id)
+    suspend fun getNotes(id: Long): Notes? {
+        return dao.getNotesById(id)
     }
-    fun update(id: Long, nama: String, nim: String, kelas: String) {
-        val mahasiswa = Notes(
+    fun update(id: Long, name: String, content: String, categories: String) {
+        val notes = Notes(
             id = id,
-            name = nama,
-            content = nim,
-            categories = kelas
+            name = name,
+            content = content,
+            categories = categories
         )
         viewModelScope.launch(Dispatchers.IO) {
-            dao.updateMahasiswa(mahasiswa)
+            dao.updateNotes(notes)
         }
     }
     fun delete(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteMahasiswaById(id)
+            dao.deleteNotesById(id)
         }
     }
 }
