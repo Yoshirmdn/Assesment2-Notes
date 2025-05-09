@@ -11,17 +11,17 @@ import kotlinx.coroutines.flow.Flow
 interface NotesDao {
 
      @Insert
-     suspend fun insertMahasiswa(mahasiswa: Notes)
+     suspend fun insertNotes(mahasiswa: Notes)
 
      @Update
-     suspend fun updateMahasiswa(mahasiswa: Notes)
+     suspend fun updateNotes(mahasiswa: Notes)
 
      @Query("SELECT * FROM notes Order By content ASC")
      fun getMahasiswa(): Flow<List<Notes>>
 
      @Query("SELECT * FROM notes WHERE id = :id")
-     suspend fun getMahasiswaById(id: Long): Notes?
+     suspend fun getNotesById(id: Long): Notes?
 
      @Query("DELETE FROM notes WHERE id = :id")
-     suspend fun deleteMahasiswaById(id: Long)
+     suspend fun deleteNotesById(id: Long)
 }
