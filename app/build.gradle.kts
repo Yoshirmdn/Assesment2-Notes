@@ -56,6 +56,12 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-beta05")
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.material.icons.extended)
+    implementation ("androidx.activity:activity-compose:1.7.2")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
