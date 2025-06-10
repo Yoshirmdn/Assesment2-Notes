@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Catatan</string>
+    <string name="empty_list">Tidak ada Catatan</string>
+    <string name="x_diklik">%1$s dikilik!</string>
+    <string name="tambah_catatan">Tambah Catatan</string>
+    <string name="belum_bisa">Tidak bisa menambah catatan</string>
+    <string name="nama">Nama</string>
+    <string name="nim">Konten</string>
+    <string name="kelas">Kategori</string>
+    <string name="edit_mahasiswa">Edit Catatan</string>
+    <string name="kembali">Kembali</string>
+    <string name="simpan">Simpan</string>
+    <string name="invalid">Nama Kategori Konten Diperlukan</string>
+    <string name="lainnya">Lainya</string>
+    <string name="hapus">Hapus</string>
+    <string name="pesan_hapus">Hapus Catatan Ini?</string>
+    <string name="tombol_hapus">Hapus</string>
+    <string name="tombol_batal">Batal</string>
+    <string name="tampilan_list">Tampilan daftar</string>
+    <string name="tampilan_grid">Tampilan kisi</string>
+    <string name="empty_note">Tekan tombol + untuk membuat catatan baru.</string>
+</resources>
